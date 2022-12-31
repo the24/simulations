@@ -37,7 +37,7 @@ def update():
     actual_l = ressort.end_pos[0] - ressort.start_pos[0]
     l = (actual_l - fixed_l) / 10
     
-    if simulation.object_draging is not mass:
+    if not mass.dragging:
         a = (-k / m) * l
         v += a
         mass.pos += [v, 0]

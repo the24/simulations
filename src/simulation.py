@@ -2,7 +2,7 @@ from typing import List
 
 import pygame
 
-from gui.colors import CLOUD, MIDNIGHT_BLUE, WHITE
+from gui.colors import MIDNIGHT_BLUE
 from physics.objects import Object
 
 pygame.init()
@@ -38,12 +38,14 @@ def run():
                 for obj in objects:
                     if obj.movable and obj.collidepoint(event.pos):
                         object_draging = obj
+                        obj.dragging = True
                         offset = obj.pos.x - event.pos[0]
             elif event.type == pygame.MOUSEMOTION:
                 if object_draging != None:
                     object_draging.pos.x = event.pos[0] + offset
             elif event.type == pygame.MOUSEBUTTONUP:
                 object_draging = None
+                obj.dragging = False
     
         screen.fill(MIDNIGHT_BLUE)
         for fn in update_functions: fn()

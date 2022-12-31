@@ -21,7 +21,7 @@ class Object(ABC):
         self.color: Color   = color
         self.priority: int  = priority
         
-        self.dragging: bool  = False
+        self.dragging: bool = False
 
     @abstractmethod
     def draw(self, screen: pygame.Surface) -> None:
