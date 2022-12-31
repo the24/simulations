@@ -1,4 +1,5 @@
 from math import floor
+from typing import List, Self
 
 import numpy as np
 import pygame
@@ -16,6 +17,28 @@ class Rect(Object):
                         priority: int = 0) -> None:
         
         super().__init__(pos, size, movable, color, priority)
+    
+    @property
+    def edges(self) -> List:
+        edges = []
+
+        start = Vector2D(self.pos.x, self.pos.y)
+        end = Vector2D(self.pos.x, self.pos.y+self.size.y)
+        edges.append(Line(start, end))
+
+        start = Vector2D(self.pos.x, self.pos.y)
+        end = Vector2D(self.pos.x+self.size.x, self.pos.y)
+        edges.append(Line(start, end))
+
+        start = Vector2D(self.pos.x+self.size.x, self.pos.y)
+        end = Vector2D(self.pos.x+self.size.x, self.pos.y+self.size.y)
+        edges.append(Line(start, end))
+
+        start = Vector2D(self.pos.x, self.pos.y+self.size.y)
+        end = Vector2D(self.pos.x+self.size.x, self.pos.y+self.size.y)
+        edges.append(Line(start, end))
+
+        return edges
     
     def draw(self, screen):
         rect = (*self.pos, *self.size)
@@ -91,9 +114,28 @@ class Circle(Object):
     def draw(self, screen: pygame.Surface):
         pygame.draw.circle(screen, self.color, self.pos.to_vec(), self.r)
     
-    def collidepoint(self, point: Vector2D):
+    def collidepoint(self, point: Vector2D) -> bool:
         diff: Vector2D = self.pos - point
         return diff.longer_than(self.size)
     
-    def collidecicle(self, circle):
-        return (self.x - circle.x)**2 + (self.y - circle.y)**2 < (self.r + circle.r)**2
+    def collidecircle(self, circle: Self) -> bool:
+        diff: Vector2D = self.pos - circle.pos
+        return diff.x**2 + diff.y**2 < (self.r + circle.r)**2
+    
+    #FIXME
+    def collideline(self, line: Line) -> bool:
+        x1 = line.start_pos.x
+        y1 = line.start_pos.y
+        x2 = line.end_pos.x
+        y2 = line.end_pos.y
+        xc = self.pos.x
+        yc = self.pos.y
+        return abs((x2-x1)*(y1-yc) - (x1 - xc)*(y2 - y1)) <= 0
+
+    def colliderect(self, rect: Rect) -> bool:
+        edges = rect.edges
+        return (rect.collidepoint(self.pos) or
+            self.collideline(edges[0]) or
+            self.collideline(edges[1]) or
+            self.collideline(edges[2]) or
+            self.collideline(edges[3]))

@@ -22,6 +22,11 @@ class Vector2D(Iterable):
     def __iter__(self):
         return iter([self.x, self.y])
 
+    def __abs__(self) -> Self:
+        x = abs(self.x)
+        y = abs(self.y)
+        return Vector2D(x, y)
+
     def __add__(self, other: Iterable) -> Self:
         if type(other) in [list, tuple]:
             other = Vector2D.from_vec(other)
