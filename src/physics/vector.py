@@ -1,4 +1,4 @@
-from typing import Iterable, List, Self, Tuple
+from typing import Iterable, List, Self, Tuple, Union
 
 
 class Vector2D(Iterable):
@@ -16,29 +16,42 @@ class Vector2D(Iterable):
     def longer_than(self, other: Self) -> bool:
         return self.x**2 + self.y**2 < other.x**2 + other.y**2
 
+    def __str__(self) -> str:
+        return f'({self.x}, {self.y})'
+
     def __iter__(self):
         return iter([self.x, self.y])
 
     def __add__(self, other: Iterable) -> Self:
-        if type(other) != Self:
+        if type(other) in [list, tuple]:
             other = Vector2D.from_vec(other)
-        x = self.x + other.x
-        y = self.y + other.y
-        return Vector2D(x, y)
+        if type(other) == Vector2D:
+            x = self.x + other.x
+            y = self.y + other.y
+            return Vector2D(x, y)
+        else:
+            raise TypeError
 
     def __sub__(self, other: Iterable) -> Self:
-        if type(other) != Self:
+        if type(other) in [list, tuple]:
             other = Vector2D.from_vec(other)
-        x = self.x - other.x
-        y = self.y - other.y
-        return Vector2D(x, y)
+        if type(other) == Vector2D:
+            x = self.x - other.x
+            y = self.y - other.y
+            return Vector2D(x, y)
+        else:
+            raise TypeError
 
-    # TODO: Faire le reste des opérations proprements
     def __eq__(self, other: Self) -> bool:
-        return self.x == other.x and self.y == other.y
+        if type(other) in [list, tuple]:
+            other = Vector2D.from_vec(other)
+        if type(other) == Vector2D:
+            return self.x == other.x and self.y == other.y
+        else:
+            raise TypeError
 
     def __ne__(self, other: object) -> bool:
-        pass
+        return not self == other
 
     def __lt__(self, other: Self) -> List[bool]:
         return [self.x < other.x, self.y < other.y]
@@ -52,5 +65,18 @@ class Vector2D(Iterable):
     def __ge__(self, other: Self)  -> List[bool]:
         return [self.x >= other.x, self.y >= other.y]
 
-    def __mul__(self, other: Self) -> Self:
-        raise Exception("Pas encore implémenté")
+    def __mul__(self, other: Union[Self, int, float]) -> Self:
+        if type(other) in [int, float]:
+            x = self.x * other
+            y = self.y * other
+            return Vector2D(x, y)
+        else:
+            raise Exception("Pas encore implémenté")
+    
+    def __truediv__(self, other: Union[Self, int, float]) -> Self:
+        if type(other) in [int, float]:
+            x = self.x / other
+            y = self.y / other
+            return Vector2D(x, y)
+        else:
+            raise Exception("Pas encore implémenté")
