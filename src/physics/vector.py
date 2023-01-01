@@ -85,3 +85,20 @@ class Vector2D(Iterable):
             return Vector2D(x, y)
         else:
             raise Exception("Pas encore implémenté")
+
+    def orthogonal(self) -> Self:
+        return Vector2D(-self.y, self.x)
+    
+    def is_orthogonal_with(self, v: Self) -> bool:
+        return dot(self, v) == 0
+
+
+def dot(v1: Vector2D, v2: Vector2D) -> int:
+    return v1.x*v2.x + v1.y*v2.y
+
+
+class Base:
+    
+    def __init__(self, u, v) -> None:
+        self.u = u
+        self.v = v

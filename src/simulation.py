@@ -34,6 +34,7 @@ def run():
         for event in pygame.event.get():
             if event.type == pygame.QUIT: lauched = False
 
+            #TODO: 2D movement
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for obj in objects:
                     if obj.movable and obj.collidepoint(event.pos):
